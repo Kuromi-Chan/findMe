@@ -1,0 +1,6 @@
+rootProject.name = 'findMe'
+include 'authorization'
+include 'data'
+include 'client-api'
+include 'web'
+
