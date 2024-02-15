@@ -12,6 +12,8 @@
     </annotationProcessing>
     <bytecodeTargetLevel target="17">
       <module name="authorization" target="20" />
+      <module name="findMe.web.main" target="20" />
+      <module name="findMe.web.test" target="20" />
     </bytecodeTargetLevel>
   </component>
 </project>

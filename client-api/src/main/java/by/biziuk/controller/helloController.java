@@ -1,4 +1,4 @@
-package by.biziuk.config;
+package by.biziuk.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,6 +11,6 @@ public class helloController {
     
     @GetMapping("/")
     public String books(Model model) {
-        return "mainForm";
+        return "mainPage";
     }
 }
