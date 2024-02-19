@@ -10,8 +10,9 @@
         </ul>
 
         <div class="col-md-3 text-end">
-            <button type="button" class="btn btn-outline-primary me-2">Войти</button>
-            <button type="button" class="btn btn-primary">Создать аккаунт</button>
+            <a id="loginBtn" th:href="@{/login}" class="btn btn-primary btn-lg" role="button" aria-pressed="true" th:unless="${authenticated}">Войти</a>
+            <a id="registrationBtn" th:href="@{/registration}" class="btn btn-primary btn-lg" role="button" aria-pressed="true" th:unless="${authenticated}">Создать аккаунт</a>
+            <a id="userDashboard" href="/user-dashboard" class="btn btn-primary btn-lg" role="button" aria-pressed="true"  th:if="${authenticated}">Личный кабинет</a>
         </div>
     </header>
 </div>

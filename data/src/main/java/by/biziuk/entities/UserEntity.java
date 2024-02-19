@@ -1,6 +1,6 @@
 package by.biziuk.entities;
 
-//import by.biziuk.enums.Role;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,12 +21,26 @@ public class UserEntity {
     
     private String password;
     
-    private String firstName;
+    private String fio;
     
-    private String lastName;
+    public String getEmail() {
+        return email;
+    }
+    public String getPassword() {
+        return password;
+    }
+    public String getFio(){return fio;}
     
-//    @Enumerated(value = EnumType.STRING)
-//    @Column(name = "role")
-//    private Role role;
-
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    
+    public void setFio(String fio) {
+        this.fio = fio;
+    }
+    
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    
 }
