@@ -25,4 +25,5 @@ public class PetTypeEntity {
     private Long id;
     
     private String name;
+    
 }

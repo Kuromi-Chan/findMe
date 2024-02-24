@@ -1,6 +1,6 @@
 <div class="container d-md-flex align-items-stretch" style="background-color: rgba(239,239,239,0.56); height:100% ">
     <nav id="sidebar">
-        <div class="p-2 pt-4">
+        <div class="p-4 pt-4">
             <h5 style="height: 40px">Фильтры</h5>
             <h6 data-toggle="collapse" aria-expanded="false">Локация</h6>
             <div class="p-2 pt-1">
@@ -21,25 +21,44 @@
             </div>
 
             <h6 data-toggle="collapse" aria-expanded="false">Тип животного</h6>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                <label class="form-check-label" for="flexRadioDefault1">
-                    Кошки
-                </label>
+            <div th:each="petType : ${petTypes}">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="petType" th:id="'flexRadioDefault' + ${petType.id}" th:value="${petType.id}">
+                    <label class="form-check-label" th:for="'flexRadioDefault' + ${petType.id}" th:text="${petType.name}"></label>
+                </div>
             </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
-                <label class="form-check-label" for="flexRadioDefault2">
-                    Собаки
-                </label>
-            </div>
-            <h6 data-toggle="collapse" aria-expanded="false">Порода</h6>
-            <select class="form-select" aria-label="Default select example">
-                <option selected>Без породы</option>
-            </select>
-            <h6 data-toggle="collapse" aria-expanded="false">Окрас</h6>
-            <select class="form-select" aria-label="Default select example">
 
+            <h6 data-toggle="collapse" id="breedLable" aria-expanded="false" style="display: none;">Порода</h6>
+            <select id="breedSelect" class="form-select" aria-label="Default select example" style="display: none; width: 300px">
+                <option th:each="breed : ${breeds}" th:value="${breed.id}" th:text="${breed.name}"></option>
+            </select>
+            <script th:inline="javascript">
+                document.querySelectorAll('input[name="petType"]').forEach((input) => {
+                    input.addEventListener('change', function() {
+                        var breeds = /*[[ ${breeds} ]]*/ [];
+                        if (this.checked) {
+                            document.getElementById('breedSelect').style.display = 'block';
+                            document.getElementById('breedLable').style.display='block';
+                            var petTypeId = this.value;
+                            var filteredBreeds = breeds.filter(breed => breed.petType.id.toString()  === petTypeId);
+                            var breedSelect = document.getElementById('breedSelect');
+                            breedSelect.innerHTML = '';
+                            filteredBreeds.forEach(breed => {
+                                var option = document.createElement('option');
+                                option.value = breed.id;
+                                option.text = breed.name;
+                                breedSelect.appendChild(option);
+                            });
+                        } else {
+                            document.getElementById('breedLable').style.display='none';
+                            document.getElementById('breedSelect').style.display = 'none';
+                        }
+                    });
+                });
+            </script>
+            <h6 data-toggle="collapse" aria-expanded="false">Окрас</h6>
+            <select class="form-select" aria-label="Default select example" style="width: 300px">
+                <option th:each="color : ${colors}" th:value="${color.id}" th:text="${color.name}"></option>
             </select>
         </div>
     </nav>

@@ -15,6 +15,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -36,6 +37,12 @@ public class PetEntity {
     
     private String sex;
     
+    private String location;
+    
+    private Instant missingDate;
+    
+    private byte[] photo;
+    
     @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<PetsColorEntity> petColors = new HashSet<>();
     
@@ -47,7 +54,6 @@ public class PetEntity {
     @JoinColumn(name = "petType_id")
     private PetTypeEntity petType;
     
-    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<PhotoEntity> photos = new HashSet<>();
+   
     
 }

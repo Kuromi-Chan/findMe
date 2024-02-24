@@ -4,6 +4,7 @@ package by.biziuk.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 
 @Getter
 @Setter
@@ -21,7 +22,12 @@ public class UserEntity {
     
     private String password;
     
+    private String telephone;
+    
     private String fio;
+    
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<PostEntity> posts;
     
     public String getEmail() {
         return email;

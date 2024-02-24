@@ -5,14 +5,14 @@
         </a>
 
         <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-            <li><a href="#" class="nav-link px-2 link-dark">Главная</a></li>
+            <li><a href="/" class="nav-link px-2 link-dark">Главная</a></li>
             <li><a href="#" class="nav-link px-2 link-dark">Дополнительная информация</a></li>
         </ul>
 
         <div class="col-md-3 text-end">
             <a id="loginBtn" th:href="@{/login}" class="btn btn-primary btn-lg" role="button" aria-pressed="true" th:unless="${authenticated}">Войти</a>
             <a id="registrationBtn" th:href="@{/registration}" class="btn btn-primary btn-lg" role="button" aria-pressed="true" th:unless="${authenticated}">Создать аккаунт</a>
-            <a id="userDashboard" href="/user-dashboard" class="btn btn-primary btn-lg" role="button" aria-pressed="true"  th:if="${authenticated}">Личный кабинет</a>
+            <a id="userDashboard" th:href="@{/profile}" class="btn btn-primary btn-lg" role="button" aria-pressed="true"  th:if="${authenticated}">Личный кабинет</a>
         </div>
     </header>
 </div>
