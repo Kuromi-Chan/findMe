@@ -37,10 +37,7 @@ public class PostController {
         model.addAttribute("petTypes", petTypeRepository.findAll());
         model.addAttribute("breeds", breedRepository.findAll());
         model.addAttribute("post", new PostEntity());
-        model.addAttribute("colors", colorRepository.findAll());
-        ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(LocationData.districtStreetMap);
-        model.addAttribute("locations", json);
+        model.addAttribute("colors", colorRepository.findAll());;
         return POST_FORM;
     }
 }

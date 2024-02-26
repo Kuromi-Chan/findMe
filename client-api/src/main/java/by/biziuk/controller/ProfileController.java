@@ -1,6 +1,6 @@
 package by.biziuk.controller;
 
-import by.biziuk.security.UserSessionInfo;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
