@@ -12,6 +12,8 @@
 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
     Создать объявление
 </button>
+
+
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
      aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -43,8 +45,10 @@
                     </div>
                     <div class="container mt-3">
                         <h6 data-toggle="collapse" aria-expanded="false">Последнее местонахождения</h6>
-                        <input placeholder="Введите адрес" >
+                        <input type="text" onchange="fetchSuggest(e.target.value)" placeholder="Введите адрес" id="locationInput" th:field="${pet.location}">
+                        <div id="suggestContent"></div>
                     </div>
+
                     <div class="container  mt-3">
                         <h6 data-toggle=" collapse" aria-expanded="false">Дата пропажи</h6>
                         <input type="date" class="form-control" id="dateInput" th:field="${pet.missingDate}">
@@ -53,6 +57,7 @@
                         <h6 data-toggle=" collapse" aria-expanded="false">Кличка</h6>
                         <input type="text" class="form-control" id="petName" th:field="${pet.name}"
                                placeholder="Введите текст">
+
                     </div>
                     <div class="container mt-3">
                         <h6 data-toggle="collapse" aria-expanded="false">Пол</h6>
@@ -100,44 +105,109 @@
     </div>
 </div>
 
+<script src="https://api-maps.yandex.ru/2.1/?apikey=fc74894a-7e1d-40fc-814b-a09c1a8e9c40&lang=ru_RU&load=Geosuggest" type="text/javascript"></script>
+
 <script th:inline="javascript">
-    document.querySelectorAll('input[name="petType"]').forEach((input) => {
-        input.addEventListener('change', function () {
-            var breeds = /*[[ ${breeds} ]]*/ [];
-            if (this.checked) {
-                document.getElementById('breedSelect').style.display = 'block';
-                document.getElementById('breedLable').style.display = 'block';
-                var petTypeId = this.value;
-                var filteredBreeds = breeds.filter(breed => breed.petType.id.toString() === petTypeId);
-                var breedSelect = document.getElementById('breedSelect');
-                breedSelect.innerHTML = '';
-                filteredBreeds.forEach(breed => {
-                    var option = document.createElement('option');
-                    option.value = breed.id;
-                    option.text = breed.name;
-                    breedSelect.appendChild(option);
-                });
-            } else {
-                document.getElementById('breedLable').style.display = 'none';
-                document.getElementById('breedSelect').style.display = 'none';
-            }
-        });
-    });
+    let suggestArray = [];
+    const API_KEY = 'f0cb73e6-eab8-4331-8f85-77517f8714ad';
 
-    function displaySelectedImage(event, elementId) {
-        const selectedImage = document.getElementById(elementId);
-        const fileInput = event.target;
-
-        if (fileInput.files && fileInput.files[0]) {
-            const reader = new FileReader();
-
-            reader.onload = function (e) {
-                selectedImage.src = e.target.result;
-            };
-
-            reader.readAsDataURL(fileInput.files[0]);
-        }
+    // Определение функции fetchSuggest в глобальной области видимости
+    function fetchSuggest(name) {
+        return fetch(`https://suggest-maps.yandex.ru/v1/suggest?apikey=${API_KEY}&text=${name}`)
+            .then(response => response.json())
+            .then(data => {
+                suggestArray.push(data);
+                console.log(data);
+            });
     }
+
+    // Определение функции filterData в глобальной области видимости
+    function filterData(name) {
+        return suggestArray.filter(item => item.results[0].title.text.toLowerCase().includes(name.toLowerCase()));
+    }
+
+    // Обработчик события onchange для поля ввода местоположения
+    document.getElementById("locationInput").onchange = function () {
+        const inputValue = this.value;
+        fetchSuggest(inputValue)
+            .then(() => {
+                let filteredData = filterData(inputValue);
+                console.log(filteredData);
+                const suggestOutput = document.querySelector('#suggestContent');
+                if (filteredData.length === 0) {
+                    suggestOutput.innerHTML = '<p>Ничего не найдено</p>';
+                } else {
+                    let data = filteredData.map(item => `<p>${item.results[0].title.text}</p>`);
+                    suggestOutput.innerHTML = `<p>${data}</p>`;
+                }
+            })
+
+        function connectSuggest(inputSelector, listSelector) {
+            // Получаем элементы интпута и списка
+            var input = document.querySelector(inputSelector);
+            var list = document.querySelector(listSelector);
+
+
+            var suggestSession = ymaps.suggest(inputSelector);
+            console.log(connectSuggest('#suggest', '#suggest-list'))
+            suggestSession.events
+                .add('inputchange', (e) => {
+                    var value = e.get('value');
+                    suggestSession.requestSuggest(value);
+                })
+                .add('suggest', (e) => {
+                    var items = e.get('items');
+                    list.innerHTML = '';
+                    for (var i = 0; i < items.length; i++) {
+                        var li = document.createElement('li');
+                        li.textContent = items[i].displayName;
+                        list.appendChild(li);
+                    }
+                })
+                .add('select', function (e) {
+                    var item = e.get('item');
+                    input.value = item.displayName;
+                    list.innerHTML = '';
+                });
+        }
+
+        document.querySelectorAll('input[name="petType"]').forEach((input) => {
+            input.addEventListener('change', function () {
+                var breeds = /*[[ ${breeds} ]]*/ [];
+                if (this.checked) {
+                    document.getElementById('breedSelect').style.display = 'block';
+                    document.getElementById('breedLable').style.display = 'block';
+                    var petTypeId = this.value;
+                    var filteredBreeds = breeds.filter(breed => breed.petType.id.toString() === petTypeId);
+                    var breedSelect = document.getElementById('breedSelect');
+                    breedSelect.innerHTML = '';
+                    filteredBreeds.forEach(breed => {
+                        var option = document.createElement('option');
+                        option.value = breed.id;
+                        option.text = breed.name;
+                        breedSelect.appendChild(option);
+                    });
+                } else {
+                    document.getElementById('breedLable').style.display = 'none';
+                    document.getElementById('breedSelect').style.display = 'none';
+                }
+            });
+        });
+
+        function displaySelectedImage(event, elementId) {
+            const selectedImage = document.getElementById(elementId);
+            const fileInput = event.target;
+
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    selectedImage.src = e.target.result;
+                };
+
+                reader.readAsDataURL(fileInput.files[0]);
+            }
+        }
 </script>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
