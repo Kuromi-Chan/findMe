@@ -17,7 +17,7 @@
 <div class="list-group mt-3" >
     <div th:each="post : ${posts}" class="list-group-item list-group-item-action" aria-current="true">
         <div style="display: flex; align-items: center;">
-            <img  id="petPhoto" th:src="@{'/image/' + ${post.id}}" alt="Image" style="width: 100px; height: 100px;"/>
+            <img  id="petPhoto" th:src="'data:image/jpeg;base64,'+${post.pet.photoBase64}" alt="Image" style="width: 100px; height: 100px;"/>
             <div>
                 <h5 class="mb-1" th:text="${post.pet.name}">Кличка животного</h5>
                 <p class="mb-1" th:text="${post.pet.description}">Описание объявления</p>

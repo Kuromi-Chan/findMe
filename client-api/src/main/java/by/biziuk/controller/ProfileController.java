@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.codec.Base64;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +25,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,7 +40,8 @@ public class ProfileController {
    
     
     @GetMapping("/profile")
-    public String profile(Model model) {
+    public String profile(Model model)
+        throws UnsupportedEncodingException {
         List<PostEntity> posts = postRepository.findAll();
         model.addAttribute("posts", posts);
         model.addAttribute("authenticated", isAuthenticated());
@@ -49,13 +52,6 @@ public class ProfileController {
         return authentication != null && authentication.isAuthenticated()
             && !(authentication instanceof AnonymousAuthenticationToken);
     }
-    @GetMapping(value = "/image/{postId}")
-    public ResponseEntity<byte[]> downloadImage(@PathVariable Long postId) {
-        Optional<PostEntity> item = postRepository.findById(postId);
-        byte[] image = item.get().getPet().getPhoto();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.IMAGE_PNG);
-        return new ResponseEntity<>(image, headers, HttpStatus.OK);
-    }
+   
     
 }

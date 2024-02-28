@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
@@ -14,7 +15,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Instant;
 import java.util.HashSet;
@@ -41,8 +41,10 @@ public class PetEntity {
     private String location;
     
     private String  missingDate;
-    
+
     private byte[] photo;
+    @Transient
+    private String photoBase64;
     
     
 //    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, orphanRemoval = true)
