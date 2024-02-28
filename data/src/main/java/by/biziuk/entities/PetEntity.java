@@ -1,19 +1,20 @@
 package by.biziuk.entities;
 
-import jakarta.persistence.CascadeType;
+import by.biziuk.entities.ColorEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Instant;
 import java.util.HashSet;
@@ -39,12 +40,16 @@ public class PetEntity {
     
     private String location;
     
-    private Instant missingDate;
+    private String  missingDate;
     
     private byte[] photo;
     
-    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<PetsColorEntity> petColors = new HashSet<>();
+    
+//    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private Set<PetsColorEntity> petColors = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name = "color_id")
+    private ColorEntity color;
     
     @ManyToOne
     @JoinColumn(name = "breed_id")
@@ -54,6 +59,5 @@ public class PetEntity {
     @JoinColumn(name = "petType_id")
     private PetTypeEntity petType;
     
-   
     
 }

@@ -8,20 +8,37 @@
 </head>
 <body>
 <div th:replace="header :: header"></div>
+<div class="container  mt-3">
+    <h6 data-toggle="collapse" aria-expanded="false">Личные данные</h6>
+</div>
 
-<div class="list-group" >
-    <a href="#" class="list-group-item list-group-item-action" aria-current="true">
-        <div class="d-flex w-100 justify-content-between">
-            <h5 class="mb-1">Объявление 1</h5>
+    <a href="/post/create" >
+        Создать объявление</a>
+<div class="list-group mt-3" >
+    <div th:each="post : ${posts}" class="list-group-item list-group-item-action" aria-current="true">
+        <div style="display: flex; align-items: center;">
+            <img  id="petPhoto" th:src="@{'/image/' + ${post.id}}" alt="Image" style="width: 100px; height: 100px;"/>
+            <div>
+                <h5 class="mb-1" th:text="${post.pet.name}">Кличка животного</h5>
+                <p class="mb-1" th:text="${post.pet.description}">Описание объявления</p>
+            </div>
         </div>
-        <p class="mb-1">Потерлся малчик кабель овчарка</p>
-        <button type="button" class="btn btn-primary btn-lg btn-block" >Редактировать</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block" >Удалить</button>
-    </a>
+        <button type="button" class="btn btn-primary btn-lg btn-block">Редактировать</button>
+        <button type="button" class="btn btn-secondary btn-lg btn-block">Удалить</button>
+    </div>
+    <script th:inline="javascript">
+        document.getElementById('fileInput').addEventListener('load', function(event) {
+            var imageBase64 = $('#imageBase64').val();
+            var imagePreview= document.getElementById('petPhoto');
+            if(imagePreview) {
+                imagePreview.src = "data:image/png;base64," + imageBase64;
+            }
+        });
 
 
-<!--    <div th:include="postForm"></div>-->
-    <a href="post/create">нажмы</a>
+
+    </script>
+</div>
 </div>
 </body>
 </html>

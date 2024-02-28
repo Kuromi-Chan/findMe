@@ -36,4 +36,9 @@ public class PostEntity {
     
     @ManyToOne
     private UserEntity user;
+    
+    public PetEntity getPet() {
+        return pet;
+    }
+    
 }

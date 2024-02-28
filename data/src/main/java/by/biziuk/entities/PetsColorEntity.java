@@ -33,7 +33,8 @@ public class PetsColorEntity {
     
     @ManyToOne
     @JoinColumn(name = "color_id")
-    private СolorEntity color;
+    private ColorEntity color;
+    
     
 
 }
