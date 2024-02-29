@@ -23,7 +23,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
     implementation 'org.springframework.security:spring-security-core:6.2.1'
-
 }
 
 

@@ -2,7 +2,6 @@ package by.biziuk.controller;
 
 import by.biziuk.entities.PetEntity;
 import by.biziuk.entities.PostEntity;
-import by.biziuk.utils.CompressionService;
 import by.biziuk.repositories.BreedRepository;
 import by.biziuk.repositories.ColorRepository;
 import by.biziuk.repositories.PetRepository;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.time.Instant;
 
 @Controller
 //@RequestMapping("/post")
@@ -36,8 +34,6 @@ public class PostController {
     private ColorRepository colorRepository;
     @Autowired
     private PetRepository petRepository;
-    @Autowired
-    private CompressionService compressionService;
     private static final String POST_FORM = "postForm";
     private static final String PROFILE_PAGE = "profilePage";
     @GetMapping("/post/create")
@@ -46,31 +42,23 @@ public class PostController {
         model.addAttribute("petTypes", petTypeRepository.findAll());
         model.addAttribute("breeds", breedRepository.findAll());
         model.addAttribute("post", new PostEntity());
-        model.addAttribute("colors", colorRepository.findAll());
+        model.addAttribute("colors", colorRepository.findAll());;
         return POST_FORM;
     }
     @PostMapping("/post/create")
     public String createPost(
         @ModelAttribute("pet") PetEntity pet,
-        @ModelAttribute("post") PostEntity post) {
+        @ModelAttribute("post") PostEntity post,
+        @RequestParam("file") MultipartFile file)
+        throws IOException {
+        pet.setPhoto(file.getBytes());
         petRepository.save(pet);
-        post.setCreatedAt(Instant.now());
         post.setPet(pet);
         post.setStatus("Active");
         post.setUser(userSessionInfo.getCurrentUser());
         postRepository.save(post);
-        return PROFILE_PAGE;
-    }
-    @PostMapping("/files/upload")
-    public void uploadFile(Model model, @ModelAttribute("pet") PetEntity pet, @RequestParam("file") MultipartFile file) {
-        try {
-            pet.setPhoto(file.getInputStream().readAllBytes());
-            model.addAttribute("pet", pet);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        
+        return "redirect:/profile";
     }
    
+   
 }
-

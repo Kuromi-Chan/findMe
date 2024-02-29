@@ -9,85 +9,83 @@
 </head>
 
 <body>
-<form th:action="@{/post/create}" method="post">
+<form th:action="@{/post/create}" method="post" enctype="multipart/form-data">
     <div class="form-group" style="margin-left: 400px; margin-right: 400px;">
-        <div class="container">
-            <h6 data-toggle="collapse" aria-expanded="false">Фотография</h6>
-            <div class="mb-2 d-flex justify-content-left">
-                <img id="selectedImage" src="https://mdbootstrap.com/img/Photos/Others/placeholder.jpg"
-                     alt="example placeholder" style="width: 200px; height: 200px;"/>
-            </div>
-            <div class="d-flex justify-content-left">
-                <div class="btn btn-primary btn-rounded">
-                    <label class="form-label text-white m-1" for="customFile1">Загрузить
-                        файл</label>
+            <div class="container">
+                <h6 data-toggle="collapse" aria-expanded="false">Фотография</h6>
+                <div class="mb-2 d-flex justify-content-left">
+                    <img id="selectedImage" src="https://mdbootstrap.com/img/Photos/Others/placeholder.jpg"
+                         alt="example placeholder" style="width: 200px; height: 200px;"/>
+                </div>
+                <div class="d-flex justify-content-left">
+                    <div class="btn btn-primary btn-rounded">
+                        <label class="form-label text-white m-1" for="customFile1">Загрузить
+                            файл</label>
                         <input type="file" name="file" class="form-control d-none" id="customFile1"
                                onchange="displaySelectedImage(event, 'selectedImage')" />
+                    </div>
 
                 </div>
-                <!-- Hidden input to store photo bytes -->
-                <input type="hidden" id="photoBytes" name="photoBytes" th:field="${pet.photoBase64}" />
             </div>
-        </div>
-        <div class="container mt-3">
-            <h6 data-toggle="collapse" aria-expanded="false">Последнее местонахождения</h6>
-            <input type="text" class="form-control" onchange="fetchCoordinates(e.target.value)" placeholder="Введите адрес" id="locationInput">
-            <input type="text" class="form-control" placeholder="Введите адрес" id="locationInput2" style="display: none" th:field="${pet.location} ">
+            <div class="container mt-3">
+                <h6 data-toggle="collapse" aria-expanded="false">Последнее местонахождения</h6>
+                <input type="text" class="form-control" onchange="fetchCoordinates(e.target.value)" placeholder="Введите адрес" id="locationInput">
+                <input type="text" class="form-control" placeholder="Введите адрес" id="locationInput2" style="display: none" th:field="${pet.location} ">
 
-        </div>
+            </div>
 
-        <div class="container  mt-3">
-            <h6 data-toggle=" collapse" aria-expanded="false">Дата пропажи</h6>
-            <input type="date" class="form-control" id="dateInput" th:field="${pet.missingDate}">
-        </div>
-        <div class="container  mt-3">
-            <h6 data-toggle=" collapse" aria-expanded="false">Кличка</h6>
-            <input type="text" class="form-control" id="petName" th:field="${pet.name}"
-                   placeholder="Введите текст">
+            <div class="container  mt-3">
+                <h6 data-toggle=" collapse" aria-expanded="false">Дата пропажи</h6>
+                <input type="date" class="form-control" id="dateInput" th:field="${pet.missingDate}">
+            </div>
+            <div class="container  mt-3">
+                <h6 data-toggle=" collapse" aria-expanded="false">Кличка</h6>
+                <input type="text" class="form-control" id="petName" th:field="${pet.name}"
+                       placeholder="Введите текст">
 
-        </div>
-        <div class="container mt-3">
-            <h6 data-toggle="collapse" aria-expanded="false">Пол</h6>
-            <input class="form-check-input" type="radio" name="sex" id="maleRadio" th:field="${pet.sex}"
-                   value="Мальчик">
-            <label class="form-check-label" for="maleRadio">Девочка</label>
-            <input class="form-check-input" type="radio" name="sex" id="femaleRadio"
-                   th:field="${pet.sex}" value="Девочка">
-            <label class="form-check-label" for="femaleRadio">Мальчик</label>
-        </div>
+            </div>
+            <div class="container mt-3">
+                <h6 data-toggle="collapse" aria-expanded="false">Пол</h6>
+                <input class="form-check-input" type="radio" name="sex" id="maleRadio" th:field="${pet.sex}"
+                       value="Мальчик">
+                <label class="form-check-label" for="maleRadio">Девочка</label>
+                <input class="form-check-input" type="radio" name="sex" id="femaleRadio"
+                       th:field="${pet.sex}" value="Девочка">
+                <label class="form-check-label" for="femaleRadio">Мальчик</label>
+            </div>
 
-        <div class="container  mt-3">
-            <h6 data-toggle="collapse" aria-expanded="false">Тип животного</h6>
-            <div th:each="petType : ${petTypes}">
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="petType" th:field="${pet.petType}" th:id="'flexRadioDefault' + ${petType.id}"
-                           th:value="${petType.id}">
-                    <label class="form-check-label" th:for="'flexRadioDefault' + ${petType.id}" th:text="${petType.name}"></label>
+            <div class="container  mt-3">
+                <h6 data-toggle="collapse" aria-expanded="false">Тип животного</h6>
+                <div th:each="petType : ${petTypes}">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="petType" th:field="${pet.petType}" th:id="'flexRadioDefault' + ${petType.id}"
+                               th:value="${petType.id}">
+                        <label class="form-check-label" th:for="'flexRadioDefault' + ${petType.id}" th:text="${petType.name}"></label>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="container  mt-3">
-            <h6 data-toggle="collapse" id="breedLable" aria-expanded="false" style="display: none;">Порода</h6>
-            <select id="breedSelect" class="form-select" aria-label="Default select example" th:field="${pet.breed}" style="display: none; width: 300px">
-                <option th:each="breed : ${breeds}" th:value="${breed.id}" th:text="${breed.name}"></option>
-            </select>
-        </div>
-        <div class="container  mt-3">
-            <h6 data-toggle="collapse" aria-expanded="false">Окрас</h6>
-            <select class="form-select" aria-label="Default select example" th:field="${pet.color}" style="width: 300px">
-                <option th:each="color : ${colors}" th:value="${color.id}" th:text="${color.name}"></option>
-            </select>
-        </div>
-        <div class="container  mt-3">
-            <h6 data-toggle=" collapse" aria-expanded="false">Описание</h6>
-            <textarea type="text" style="height: 200px;" class="form-control" id="textInput"
-                      th:field="${pet.description}"></textarea>
-        </div>
-        <div class="container  mt-3" style="justify-content: center">
+            <div class="container  mt-3">
+                <h6 data-toggle="collapse" id="breedLable" aria-expanded="false" style="display: none;">Порода</h6>
+                <select id="breedSelect" class="form-select" aria-label="Default select example" th:field="${pet.breed}" style="display: none; width: 300px">
+                    <option th:each="breed : ${breeds}" th:value="${breed.id}" th:text="${breed.name}"></option>
+                </select>
+            </div>
+            <div class="container  mt-3">
+                <h6 data-toggle="collapse" aria-expanded="false">Окрас</h6>
+                <select class="form-select" aria-label="Default select example" th:field="${pet.color}" style="width: 300px">
+                    <option th:each="color : ${colors}" th:value="${color.id}" th:text="${color.name}"></option>
+                </select>
+            </div>
+            <div class="container  mt-3">
+                <h6 data-toggle=" collapse" aria-expanded="false">Описание</h6>
+                <textarea type="text" style="height: 200px;" class="form-control" id="textInput"
+                          th:field="${pet.description}"></textarea>
+            </div>
+            <div class="container  mt-3" style="justify-content: center">
 
-            <button type="submit" class="btn btn-primary">Опубликовать</button>
-            <a href="/profile" class="btn btn-secondary">Закрыть</a>
-        </div>
+                <button type="submit" class="btn btn-primary">Опубликовать</button>
+                <a href="/profile" class="btn btn-secondary" >Закрыть</a>
+            </div>
     </div>
 </form>
 
@@ -137,10 +135,6 @@
 
             reader.onload = function (e) {
                 selectedImage.src = e.target.result;
-                // Преобразование изображения в массив байтов и установка в th:value
-                const arrayBuffer = e.target.result.split(',')[1];
-                console.log(arrayBuffer);
-                document.getElementById('photoBytes').value = arrayBuffer;
             };
 
             reader.readAsDataURL(fileInput.files[0]);
