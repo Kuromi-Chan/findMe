@@ -1,34 +1,23 @@
 package by.biziuk.controller;
 
-import by.biziuk.dictionaries.LocationData;
 import by.biziuk.entities.PetEntity;
 import by.biziuk.entities.PostEntity;
-import by.biziuk.entities.UserEntity;
 import by.biziuk.repositories.BreedRepository;
-import by.biziuk.repositories.PetRepository;
 import by.biziuk.repositories.ColorRepository;
+import by.biziuk.repositories.PetRepository;
 import by.biziuk.repositories.PetTypeRepository;
 import by.biziuk.repositories.PostRepository;
 import by.biziuk.security.UserSessionInfo;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.time.Instant;
-import java.util.Date;
 
 @Controller
 //@RequestMapping("/post")
@@ -59,14 +48,16 @@ public class PostController {
     @PostMapping("/post/create")
     public String createPost(
         @ModelAttribute("pet") PetEntity pet,
-        @ModelAttribute("post") PostEntity post) {
+        @ModelAttribute("post") PostEntity post,
+        @RequestParam("file") MultipartFile file)
+        throws IOException {
+        pet.setPhoto(file.getBytes());
         petRepository.save(pet);
-        post.setCreatedAt(Instant.now());
         post.setPet(pet);
         post.setStatus("Active");
         post.setUser(userSessionInfo.getCurrentUser());
         postRepository.save(post);
-        return PROFILE_PAGE;
+        return "redirect:/profile";
     }
    
    
