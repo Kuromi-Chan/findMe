@@ -11,7 +11,7 @@
     <style type="text/css">
         .btn-circle.btn-xl {
             width: 200px;
-            height: 100px;
+            height: 50px;
             padding: 13px 18px;
             border-radius: 50px;
             font-size: 15px;
@@ -22,37 +22,93 @@
 <body>
 <div th:replace="header :: header"></div>
 <div class="container  mt-3">
-    <h6 data-toggle="collapse" aria-expanded="false">Личные данные</h6>
+    <section style="background-color: #eee;">
+        <div class="row p-5 pt-4" style="text-align: center">
+                    <div class="col-lg-3">
+                        <div class="card mb-4">
+                            <div class="card-body text-center">
+                                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
+                                     alt="avatar" class="rounded-circle img-fluid" style="width: 150px;">
+                                <h5 class="my-3" th:text="${user.fio}"></h5>
+                            </div>
+                        </div>
+                    </div>
+            <div class="col-md-8">
+                <div class="col-lg-8">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <p class="mb-0">ФИО</p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <p class="text-muted mb-0" th:text="${user.fio}"></p>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <p class="mb-0">Email</p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <p class="text-muted mb-0" th:text="${user.email}"></p>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <p class="mb-0">Номер телефона</p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <p class="text-muted mb-0" th:text="${user.telephone}"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
-
-
-<h5 class="font-weight-bold" style="text-align: center">Ваши объявления</h5>
+<h5 class="font-weight-bold  p-3" style="text-align: center">Ваши объявления</h5>
 <hr/>
-<button type="button" class="btn btn-success btn-circle btn-xl">Создать объявление</button>
+<form th:action="@{/post/create}" method="get">
+    <div style="text-align: right">
+        <button type="submit" class="btn btn-success btn-circle btn-xl">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+            </svg>
+            Создать объявление
+        </button>
+    </div>
+</form>
 <div class="list-group mt-3" style="margin-left: 400px; margin-right: 400px;">
 
     <div th:each="post : ${posts}" class="list-group-item list-group-item-action" aria-current="true">
         <div style="display: flex; align-items: center;">
-            <img  id="petPhoto" th:src="@{'/image/' + ${post.id}}" alt="Image" style="width: 200px; height: 200px;"/>
-            <div>
+            <img id="petPhoto" th:src="@{'/image/' + ${post.pet.id}}" alt="Image" style="width: 200px; height: 200px;"/>
+            <div class="p-2 pt-1">
                 <h5 class="mb-1" th:text="${post.pet.name}">Кличка животного</h5>
                 <p class="mb-1" th:text="${post.pet.description}">Описание объявления</p>
             </div>
         </div>
-        <div style="text-align: right;">
-            <button type="button" class="btn btn-primary btn-lg btn-block">Редактировать</button>
-            <button type="button" class="btn btn-secondary btn-lg btn-block">Удалить</button>
+        <div class="d-flex justify-content-end" style="text-align: right;">
+            <form th:action="@{/post/edit/__${post.pet.id}__}" method="post">
+                <button type="submit" class="btn btn-primary  btn-lg mr-2">Редактировать</button>
+            </form>
+            <form th:action="@{/post/delete/__${post.id}__}" method="post">
+                <button type="submit" class="btn btn-secondary btn-lg mr-2" >Удалить</button>
+            </form>
         </div>
     </div>
     <script th:inline="javascript">
-        document.getElementById('fileInput').addEventListener('load', function(event) {
+        document.getElementById('fileInput').addEventListener('load', function (event) {
             var imageBase64 = $('#imageBase64').val();
-            var imagePreview= document.getElementById('petPhoto');
-            if(imagePreview) {
+            var imagePreview = document.getElementById('petPhoto');
+            if (imagePreview) {
                 imagePreview.src = "data:image/png;base64," + imageBase64;
             }
         });
-
 
 
     </script>

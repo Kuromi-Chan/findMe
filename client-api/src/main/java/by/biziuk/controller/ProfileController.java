@@ -3,6 +3,7 @@ package by.biziuk.controller;
 
 import by.biziuk.entities.PostEntity;
 import by.biziuk.repositories.PostRepository;
+import by.biziuk.security.UserSessionInfo;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,8 @@ public class ProfileController {
     private static final String PROFILE_PAGE = "profilePage";
     @Autowired
     private PostRepository postRepository;
-    
+    @Autowired
+    UserSessionInfo userSessionInfo;
    
     
     @GetMapping("/profile")
@@ -44,6 +46,7 @@ public class ProfileController {
         throws UnsupportedEncodingException {
         List<PostEntity> posts = postRepository.findAll();
         model.addAttribute("posts", posts);
+        model.addAttribute("user",userSessionInfo.getCurrentUser());
         model.addAttribute("authenticated", isAuthenticated());
         return PROFILE_PAGE;
     }

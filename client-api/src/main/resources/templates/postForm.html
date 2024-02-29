@@ -9,12 +9,13 @@
 </head>
 
 <body>
-<form th:action="@{/post/create}" method="post" enctype="multipart/form-data">
+<form th:action="@{/post/create}" method="post" enctype="multipart/form-data" >
+    <input type="hidden" name="id" th:value="${pet.id}">
     <div class="form-group" style="margin-left: 400px; margin-right: 400px;">
             <div class="container">
                 <h6 data-toggle="collapse" aria-expanded="false">Фотография</h6>
                 <div class="mb-2 d-flex justify-content-left">
-                    <img id="selectedImage" src="https://mdbootstrap.com/img/Photos/Others/placeholder.jpg"
+                    <img id="selectedImage" th:src="${pet.id != null ? '/image/' + pet.id  : 'https://mdbootstrap.com/img/Photos/Others/placeholder.jpg'}"
                          alt="example placeholder" style="width: 200px; height: 200px;"/>
                 </div>
                 <div class="d-flex justify-content-left">
@@ -22,15 +23,15 @@
                         <label class="form-label text-white m-1" for="customFile1">Загрузить
                             файл</label>
                         <input type="file" name="file" class="form-control d-none" id="customFile1"
-                               onchange="displaySelectedImage(event, 'selectedImage')" />
+                               onchange="displaySelectedImage(event, 'selectedImage')"/>
+
                     </div>
 
                 </div>
             </div>
             <div class="container mt-3">
                 <h6 data-toggle="collapse" aria-expanded="false">Последнее местонахождения</h6>
-                <input type="text" class="form-control" onchange="fetchCoordinates(e.target.value)" placeholder="Введите адрес" id="locationInput">
-                <input type="text" class="form-control" placeholder="Введите адрес" id="locationInput2" style="display: none" th:field="${pet.location} ">
+                <input type="text" class="form-control" th:field="${pet.location}" placeholder="Введите адрес" id="locationInput">
 
             </div>
 
@@ -83,7 +84,7 @@
             </div>
             <div class="container  mt-3" style="justify-content: center">
 
-                <button type="submit" class="btn btn-primary">Опубликовать</button>
+                <button type="submit" class="btn btn-primary">Сохранить</button>
                 <a href="/profile" class="btn btn-secondary" >Закрыть</a>
             </div>
     </div>
