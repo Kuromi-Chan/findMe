@@ -15,25 +15,152 @@
         </div>
         <div class="col-md-9">
             <div id="map" style="height: 500px;"></div>
+
         </div>
     </div>
 </div>
+<script src="https://api-maps.yandex.ru/2.1/?apikey=fc74894a-7e1d-40fc-814b-a09c1a8e9c40&lang=ru_RU&load=Geosuggest" type="text/javascript"></script>
 <script
+
         src="https://api-maps.yandex.ru/2.1/?apikey=fc74894a-7e1d-40fc-814b-a09c1a8e9c40&lang=ru_RU"
         type="text/javascript"
 ></script>
 <script>
-    ymaps.ready(init)
-
-    function init() {
-        var myMap = new ymaps.Map('map', {
+    var myMap;
+    ymaps.ready(function () {
+        myMap = new ymaps.Map('map', {
             center: [53.902284, 27.561831],
-            zoom: 12,
-        })
+            zoom: 12
+        });
 
-        var myPlacemark = new ymaps.Placemark([53.902284, 27.561831])
+        // Загрузка данных о животных из бэкенда
+        fetch('/get-pets-data')
+            .then(response => response.json())
+            .then(async function(data) {
+                for (const pet of data) {
+                    // Получение координат
+                    const coordinates = await fetchCoordinates(pet.location);
+                    // Создание метки для каждого животного
+                    var petPlacemark = new ymaps.Placemark(
+                        [parseFloat(coordinates[1]), parseFloat(coordinates[0])], // Координаты животного
+                        {
+                            hintContent: pet.name, // Название животного
+                            balloonContent: `
+                        <div style="width: 300px;">
+                         <img src="/image/${pet.id}" alt="${pet.name}" style="width: 200px; height: 200px;">
+                          <div style="word-wrap: break-word; margin-top: 10px;">
+                                <h2>${pet.name}</h2>
+                                <p><strong>Пропал:</strong> ${pet.missingDate}</p>
+                                <p><strong>Окрас:</strong> ${pet.color.name}</p>
+                                <p><strong>Последнее местонахождение:</strong> ${pet.location}</p>
+                                <p><strong>Порода:</strong> ${pet.breed.name}</p>
+                                <p><strong>Тип животного:</strong> ${pet.petType.name}</p>
+                                <p id="ownerPhoneNumber"><strong>Звонить по номеру:</strong> <span id="ownerNumberPlaceholder_${pet.id}">+375259316479</span></p>
+                                <p style="word-break: break-all; margin-top: 10px;"><strong>Описание:</strong> ${pet.description}</p>
+                            </div>
+                        </div>
+                    ` // Описание животного
+                            ,
+                            petData: {
+                                name: pet.name, // Название животного
+                                missingDate: pet.missingDate, // Дата пропажи
+                                color: pet.color.name, // Окрас животного
+                                breed: pet.breed.name, // Порода животного
+                                petType: pet.petType.id, // Порода животного
+                            }
+                        },
+                        {
+                            iconLayout: 'default#image',
+                            iconImageHref: '/image/' + pet.id, // URL изображения животного
+                            iconImageSize: [60, 60] // Размеры изображения метки
+                        }
+                    );
 
-        myMap.geoObjects.add(myPlacemark)
+                    // Добавление метки на карту
+                    myMap.geoObjects.add(petPlacemark);
+
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching pet data:', error);
+            });
+    });
+
+    const petType = document.querySelectorAll('input[name="petType"]');
+    petType.forEach(input => {
+        input.addEventListener('change', function() {
+            if (this.checked) {
+                filterMarkers();
+            }
+        });
+    });
+
+    const breedSelect = document.getElementById("breedSelect");
+    breedSelect.addEventListener('change', function () {
+        filterMarkers()
+
+    });
+    const colorSelect = document.getElementById("colorSelect");
+    colorSelect.addEventListener('change', function () {
+        filterMarkers();
+
+    });
+
+    function loadAllMarkers(){
+        myMap.geoObjects.each(geoObject => {
+            geoObject.options.set('visible', true); // Показываем метку
+        });
+    }
+
+    function filterMarkers() {
+        const selectedPetTypeInput = document.querySelector('input[name="petType"]:checked');
+        const selectedPetTypeId = selectedPetTypeInput ? selectedPetTypeInput.value : '';
+
+        const selectedBreedIndex = breedSelect ? breedSelect.selectedIndex : -1;
+        const selectedBreedName = selectedBreedIndex !== -1 ? breedSelect.options[selectedBreedIndex].text : '';
+
+        const selectedColorIndex = colorSelect ? colorSelect.selectedIndex : -1;
+        const selectedColorName = selectedColorIndex !== -1 ? colorSelect.options[selectedColorIndex].text : '';
+
+        console.log("Выбранный окрас:", selectedColorName);
+
+        myMap.geoObjects.each(geoObject => {
+            const petData = geoObject.properties.get('petData');
+
+            const matchPetType = selectedPetTypeId === '' || (petData && petData.petType === parseInt(selectedPetTypeId));
+            const matchBreed = selectedBreedName === '' || (petData && petData.breed === selectedBreedName);
+            const matchColor = selectedColorName === '' || (petData && petData.color === selectedColorName);
+
+            if (matchPetType && matchBreed && matchColor) {
+                geoObject.options.set('visible', true); // Показываем метку
+            } else {
+                geoObject.options.set('visible', false); // Скрываем метку
+            }
+        });
+    }
+
+
+
+    function fetchCoordinates(address) {
+        const fullAddress = 'Минск, ' + address;
+        const API_KEY = 'fc74894a-7e1d-40fc-814b-a09c1a8e9c40';
+        const geocodeUrl = `https://geocode-maps.yandex.ru/1.x/?apikey=${API_KEY}&geocode=${encodeURIComponent(fullAddress)}`;
+
+        return fetch(geocodeUrl)
+            .then(response => response.text())
+            .then(data => {
+                // Создаем DOMParser для разбора XML
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(data, 'text/xml');
+
+                // Извлекаем координаты из XML-ответа
+                const coordinates = xmlDoc.querySelector('pos').textContent.split(' ');
+                return coordinates;
+            })
+            .catch(error => {
+                console.error('Ошибка при получении координат:', error);
+                return null;
+            });
     }
 </script>
 

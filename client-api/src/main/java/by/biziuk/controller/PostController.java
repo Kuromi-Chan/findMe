@@ -96,6 +96,9 @@ public class PostController {
         @PathVariable Long id,
         Model model) {
         model.addAttribute("pet", petRepository.findById(id).get());
+        model.addAttribute("petTypes", petTypeRepository.findAll());
+        model.addAttribute("breeds",breedRepository.findAll());
+        model.addAttribute("colors",colorRepository.findAll());
         return "postForm";
     }
     

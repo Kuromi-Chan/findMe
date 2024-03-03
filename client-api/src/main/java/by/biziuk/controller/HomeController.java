@@ -4,6 +4,7 @@ import by.biziuk.entities.BreedEntity;
 import by.biziuk.repositories.BreedRepository;
 import by.biziuk.repositories.ColorRepository;
 import by.biziuk.repositories.PetTypeRepository;
+import by.biziuk.repositories.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,13 +25,15 @@ public class HomeController {
     private PetTypeRepository petTypeRepository;
     @Autowired
     private ColorRepository colorRepository;
-    
+    @Autowired
+    private PostRepository postRepository;
     @GetMapping("/")
     public String books(Model model) {
         model.addAttribute("authenticated", isAuthenticated());
         model.addAttribute("breeds", breedRepository.findAll());
         model.addAttribute("colors", colorRepository.findAll());
         model.addAttribute("petTypes", petTypeRepository.findAll());
+        model.addAttribute("posts",postRepository.findAll());
         return MAIN_PAGE;
     }
     

@@ -2,23 +2,23 @@
     <nav id="sidebar">
         <div class="p-4 pt-4">
             <h5 style="height: 40px">Фильтры</h5>
-            <h6 data-toggle="collapse" aria-expanded="false">Локация</h6>
-            <div class="p-2 pt-1">
-                <h6 data-toggle="collapse" aria-expanded="false">Район</h6>
-                <select class="form-select" aria-label="Default select example">
-                    <option value="1">Заводской р-н</option>
-                     <option value="2">Партизанский р-н</option>
-                     <option value="3">Лененский р-н</option>
-                    <option value="3">Московский р-н</option>
-                    <option value="3">Фрунзенский р-н</option>
-                </select>
-            </div>
-            <div class="p-2 pt-1">
-                <h6 data-toggle="collapse" aria-expanded="false">Улица</h6>
-                <select class="form-select" aria-label="Default select example">
-                    <option value="1">Улица</option>
-                </select>
-            </div>
+<!--            <h6 data-toggle="collapse" aria-expanded="false">Локация</h6>-->
+<!--            <div class="p-2 pt-1">-->
+<!--                <h6 data-toggle="collapse" aria-expanded="false">Район</h6>-->
+<!--                <select class="form-select" aria-label="Default select example">-->
+<!--                    <option value="1">Заводской р-н</option>-->
+<!--                     <option value="2">Партизанский р-н</option>-->
+<!--                     <option value="3">Лененский р-н</option>-->
+<!--                    <option value="3">Московский р-н</option>-->
+<!--                    <option value="3">Фрунзенский р-н</option>-->
+<!--                </select>-->
+<!--            </div>-->
+<!--            <div class="p-2 pt-1">-->
+<!--                <h6 data-toggle="collapse" aria-expanded="false">Улица</h6>-->
+<!--                <select class="form-select" aria-label="Default select example">-->
+<!--                    <option value="1">Улица</option>-->
+<!--                </select>-->
+<!--            </div>-->
 
             <h6 data-toggle="collapse" aria-expanded="false">Тип животного</h6>
             <div th:each="petType : ${petTypes}">
@@ -57,9 +57,30 @@
                 });
             </script>
             <h6 data-toggle="collapse" aria-expanded="false">Окрас</h6>
-            <select class="form-select" aria-label="Default select example" style="width: 300px">
+            <select id="colorSelect" class="form-select" aria-label="Default select example" style="width: 300px">
                 <option th:each="color : ${colors}" th:value="${color.id}" th:text="${color.name}"></option>
             </select>
+            <button id="resetButton" class="btn btn-secondary mt-3">Сбросить фильтры</button>
+    <script>
+        document.getElementById('resetButton').addEventListener('click', function() {
+            // Сбрасываем выбранные значения фильтров
+            const petTypeRadioButtons = document.querySelectorAll('input[name="petType"]');
+            petTypeRadioButtons.forEach(button => button.checked = false);
+
+            const breedSelect = document.getElementById('breedSelect');
+            breedSelect.selectedIndex = 0; // Устанавливаем первый пункт в списке, если хотите, чтобы он оставался выбранным по умолчанию
+
+            const colorSelect = document.getElementById('colorSelect');
+            colorSelect.selectedIndex = 0; // Устанавливаем первый пункт в списке, если хотите, чтобы он оставался выбранным по умолчанию
+
+            // Скрыть или показать соответствующие поля, если это необходимо
+            document.getElementById('breedLable').style.display = 'none';
+            document.getElementById('breedSelect').style.display = 'none';
+            loadAllMarkers();
+        });
+
+    </script>
         </div>
+
     </nav>
 </div>

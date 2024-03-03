@@ -22,7 +22,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
         throws Exception {
         http
             .authorizeHttpRequests((requests) -> requests
-                    .requestMatchers("/", "/registration").permitAll()
+                    .requestMatchers("/", "/registration","/get-pets-data","/image/**","/pet/**").permitAll()
                     .anyRequest().authenticated()
                                   )
             .formLogin((form) -> form
